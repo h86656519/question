@@ -1,8 +1,6 @@
 package com.example.question2;
 
 import android.Manifest;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -14,13 +12,13 @@ import android.os.Build;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import java.io.File;
@@ -31,14 +29,16 @@ import java.io.IOException;
 
 public class MainActivity extends AppCompatActivity {
     private final String TAG = "MainActivity";
-    Button camera_btn, merge_btn;
+    private Button camera_btn, merge_btn;
+    private ImageView imageView1, imageView2, imageView3, imageView4, imageView5;
     private static final int CAMERA_REQUEST_CODE = 0x001;
     private Uri imageUri, mCutUri;
     private File path;
-    private static final int MY_PERMISSIONS_REQUEST_READ_CONTACTS = 100;
+    private static final int REQUSETCODE = 100;
     private static final int CODE_RESULT_REQUEST = 0xa2;
     private String folderName = "question2";  //資料夾名稱
     private Uri cropImageUri;
+    private Bitmap Outerframe;
     private File fileUri = new File(Environment.getExternalStorageDirectory().getPath() + "/" + folderName + "/" + "photo.jpg"); //拍照的原圖
     private File fileCropUri = new File(Environment.getExternalStorageDirectory().getPath() + "/" + folderName + "/" + "crop_photo.jpg"); //相機裁修過後的圖片
 
@@ -48,8 +48,11 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         checkPermissions(); //先確認權限
         initPath();  //建立要儲存的資料夾
-        camera_btn = findViewById(R.id.camera);
-        merge_btn = findViewById(R.id.mergecamera);
+        initView();
+        listener();
+    }
+
+    public void listener() {
         camera_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -66,18 +69,65 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 FileInputStream fis = null;
-                Bitmap Outerframe = BitmapFactory.decodeResource(MainActivity.this.getResources(), R.drawable.frame);
-                try {
-                    fis = new FileInputStream(fileCropUri);
-                } catch (FileNotFoundException e) {
-                    e.printStackTrace();
+                if (Outerframe != null) {
+                    try {
+                        fis = new FileInputStream(fileCropUri);
+                    } catch (FileNotFoundException e) {
+                        e.printStackTrace();
+                    }
+                    Bitmap backBitmap = BitmapFactory.decodeStream(fis);
+                    Bitmap finshBitmap = combineBitmap(backBitmap, Outerframe);
+                    generateCompositePhoto(finshBitmap);
+                } else {
+                    Toast.makeText(MainActivity.this, "請先選擇要合成的外框", Toast.LENGTH_SHORT).show();
                 }
-                Bitmap backBitmap = BitmapFactory.decodeStream(fis);
-                Bitmap finshBitmap = mergeBitmap(backBitmap, Outerframe);
-                generateCompositePhoto(finshBitmap);
-
             }
         });
+        imageView1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Outerframe = BitmapFactory.decodeResource(MainActivity.this.getResources(), R.mipmap.frame);
+                Toast.makeText(MainActivity.this, "選擇 : 點外框", Toast.LENGTH_SHORT).show();
+            }
+        });
+        imageView2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Outerframe = BitmapFactory.decodeResource(MainActivity.this.getResources(), R.mipmap.frame_film);
+                Toast.makeText(MainActivity.this, "選擇 : 底片外框", Toast.LENGTH_SHORT).show();
+            }
+        });
+        imageView3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Outerframe = BitmapFactory.decodeResource(MainActivity.this.getResources(), R.mipmap.frame_lace);
+                Toast.makeText(MainActivity.this, "選擇 : 雷絲外框", Toast.LENGTH_SHORT).show();
+            }
+        });
+        imageView4.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Outerframe = BitmapFactory.decodeResource(MainActivity.this.getResources(), R.mipmap.frame_flower);
+                Toast.makeText(MainActivity.this, "選擇 : 花外框", Toast.LENGTH_SHORT).show();
+            }
+        });
+        imageView5.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Outerframe = BitmapFactory.decodeResource(MainActivity.this.getResources(), R.mipmap.frame_wood);
+                Toast.makeText(MainActivity.this, "選擇 : 木外框", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    void initView() {
+        imageView1 = findViewById(R.id.image1);
+        imageView2 = findViewById(R.id.image2);
+        imageView3 = findViewById(R.id.image3);
+        imageView4 = findViewById(R.id.image4);
+        imageView5 = findViewById(R.id.image5);
+        camera_btn = findViewById(R.id.camera);
+        merge_btn = findViewById(R.id.mergecamera);
     }
 
     public void takePicture(Uri imageUri, int requestCode) {
@@ -86,7 +136,6 @@ public class MainActivity extends AppCompatActivity {
             intentCamera.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION); //添加这一句表示对目标应用临时授权该Uri所代表的文件
         }
         intentCamera.setAction(MediaStore.ACTION_IMAGE_CAPTURE);
-        //将拍照结果保存至photo_file的Uri中，不保留在相册中
         intentCamera.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
         startActivityForResult(intentCamera, requestCode);
     }
@@ -124,8 +173,6 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    //     * @param orgUri      剪裁原图的Uri
-//     * @param desUri      剪裁后的图片的Uri
     public void cropImageUri(Uri orgUri, Uri desUri, int aspectX, int aspectY, int width, int height, int requestCode) {
         Intent intent = new Intent("com.android.camera.action.CROP");
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
@@ -138,7 +185,6 @@ public class MainActivity extends AppCompatActivity {
         intent.putExtra("outputX", width);
         intent.putExtra("outputY", height);
         intent.putExtra("scale", true);
-        //将剪切的图片保存到目标Uri中
         intent.putExtra(MediaStore.EXTRA_OUTPUT, desUri);
         intent.putExtra("return-data", false);
         intent.putExtra("outputFormat", Bitmap.CompressFormat.JPEG.toString());
@@ -151,7 +197,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
         switch (requestCode) {
-            case MY_PERMISSIONS_REQUEST_READ_CONTACTS: {
+            case REQUSETCODE: {
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     Toast toast = Toast.makeText(MainActivity.this, "權限已取得", Toast.LENGTH_SHORT);
                     toast.show();
@@ -160,12 +206,10 @@ public class MainActivity extends AppCompatActivity {
                     if (ActivityCompat.shouldShowRequestPermissionRationale(MainActivity.this,
                             Manifest.permission.CAMERA)) {
                         //沒按下前
-                        Toast toast = Toast.makeText(MainActivity.this, "請到設定開啟權限", Toast.LENGTH_SHORT);
-                        toast.show();
+                        Toast.makeText(MainActivity.this, "請到設定開啟權限", Toast.LENGTH_SHORT).show();
                     } else {
                         //有按下後
-                        Toast toast = Toast.makeText(MainActivity.this, "若要使用次功能，請到設定開啟權限2", Toast.LENGTH_SHORT);
-                        toast.show();
+                        Toast.makeText(MainActivity.this, "若要使用次功能，請到設定開啟權限2", Toast.LENGTH_SHORT).show();
                     }
                 }
                 break;
@@ -177,23 +221,16 @@ public class MainActivity extends AppCompatActivity {
         ActivityCompat.requestPermissions(MainActivity.this,
                 new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE,
                         Manifest.permission.READ_EXTERNAL_STORAGE},
-                MY_PERMISSIONS_REQUEST_READ_CONTACTS);
+                REQUSETCODE);
     }
 
-    /**
-     * 把两个位图覆盖合成为一个位图，以底层位图的长宽为基准
-     *
-     * @param backBitmap  在底部的位图
-     * @param frontBitmap 盖在上面的位图
-     * @return
-     */
-    public Bitmap mergeBitmap(Bitmap backBitmap, Bitmap frontBitmap) {
+
+    public Bitmap combineBitmap(Bitmap backBitmap, Bitmap frontBitmap) {
         if (backBitmap == null || backBitmap.isRecycled()
                 || frontBitmap == null || frontBitmap.isRecycled()) {
-            Log.i(TAG, "backBitmap=" + backBitmap + ";frontBitmap=" + frontBitmap);
             return null;
         }
-        Bitmap bitmap = backBitmap.copy(Bitmap.Config.ARGB_8888, true);
+        Bitmap bitmap = backBitmap.copy(Bitmap.Config.ARGB_8888, true); //Bitmap.Config.ARGB_8888 圖片質量高
         Canvas canvas = new Canvas(bitmap);
         Rect baseRect = new Rect(0, 0, backBitmap.getWidth(), backBitmap.getHeight());
         Rect frontRect = new Rect(0, 0, frontBitmap.getWidth(), frontBitmap.getHeight());

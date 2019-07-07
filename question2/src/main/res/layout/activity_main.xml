@@ -4,17 +4,73 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context=".MainActivity">
 
-    <Button
-        android:id="@+id/camera"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/camera" />
-    <Button
-        android:id="@+id/mergecamera"
-        android:layout_width="wrap_content"
+        android:orientation="horizontal">
+
+        <Button
+            android:ID="@+ID/camera"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/camera" />
+
+        <Button
+            android:ID="@+ID/mergecamera"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/merge_bitmap" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/merge_bitmap" />
+
+        android:orientation="horizontal">
+
+        <ImageView
+            android:ID="@+ID/image1"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginLeft="20dp"
+            android:scaleType="fitXY"
+            android:src="@mipmap/frame" />
+
+        <ImageView
+            android:ID="@+ID/image2"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginLeft="20dp"
+            android:scaleType="fitXY"
+            android:src="@mipmap/frame_film" />
+
+        <ImageView
+            android:ID="@+ID/image3"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginLeft="20dp"
+            android:scaleType="fitXY"
+            android:src="@mipmap/frame_flower" />
+
+        <ImageView
+            android:ID="@+ID/image4"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginLeft="20dp"
+            android:scaleType="fitXY"
+            android:src="@mipmap/frame_lace" />
+
+        <ImageView
+            android:ID="@+ID/image5"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginLeft="20dp"
+            android:scaleType="fitXY"
+            android:src="@mipmap/frame_wood" />
+    </LinearLayout>
+
 
 </LinearLayout>
