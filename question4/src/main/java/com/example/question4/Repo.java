@@ -10,23 +10,23 @@ public class Repo {
         this.Defense = defense;
     }
 
-    public void setNodeId(String nodeId) {
-        this.Attack = nodeId;
-    }
-
     public void setName(String name) {
         this.Name = name;
     }
 
-    public void setID(String ID){
+    public void setID(String ID) {
         this.ID = ID;
+    }
+
+    public void setAttack(String attack) {
+        Attack = attack;
     }
 
     public String getName() {
         return Name;
     }
 
-    public String getID(){
+    public String getID() {
         return ID;
     }
 
@@ -34,7 +34,7 @@ public class Repo {
         return Defense;
     }
 
-    public String getNodeId() {
+    public String getAttack() {
         return Attack;
     }
 
