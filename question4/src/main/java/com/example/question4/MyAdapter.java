@@ -3,6 +3,7 @@ package com.example.question4;
 import android.content.Context;
 import android.graphics.Color;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,12 +38,12 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> implem
     public void onBindViewHolder(final MyAdapter.ViewHolder holder, final int position) {
         String id = persons.get(position).getID();
         String name = persons.get(position).getName();
-        String attack = persons.get(position).getAttack();
-        String defense = persons.get(position).getDefense();
+        int attack = persons.get(position).getAttack();
+        int defense = persons.get(position).getDefense();
         holder.id_holder.setText(id);
         holder.name_holder.setText(name);
-        holder.attack_holder.setText(attack);
-        holder.defense_holder.setText(defense);
+        holder.attack_holder.setText("" + attack);
+        holder.defense_holder.setText("" + defense);
         if (highlightIndex == position) {
             holder.name_holder.setTextColor(Color.RED);
         } else {
@@ -71,7 +72,9 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> implem
 
     @Override
     public int getItemCount() {
+//        Log.i("123", "persons.size() " +persons.size());//01
         return persons.size();
+
 //        return 0;
     }
 

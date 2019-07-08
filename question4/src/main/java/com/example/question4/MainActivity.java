@@ -13,6 +13,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import org.json.JSONObject;
+
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 
@@ -23,8 +25,9 @@ import java.util.ArrayList;
 //3.顯示資料
 public class MainActivity extends AppCompatActivity {
 
-//    private String HTML_URL1 = "http://demo.kidtech.com.tw/files/appexam/appexam1.htm";
-    private String HTML_URL1 = "http://demo.kidtech.com.tw/files/appexam/appexam2.htm";
+    private String HTML_URL1 = "http://demo.kidtech.com.tw/files/appexam/appexam1.htm";
+    private String HTML_URL2 = "http://demo.kidtech.com.tw/files/appexam/appexam2.htm";
+
     private GsonParser gsonParser = new GsonParser();
     private ArrayList<String> dataList = new ArrayList<>();
     private MyAdapter myAdapter;
@@ -41,51 +44,78 @@ public class MainActivity extends AppCompatActivity {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(MainActivity.this, RecyclerView.VERTICAL, false);
         recyclerView.setLayoutManager(linearLayoutManager);
 
-        new Thread() {
+        Thread t1 = new Thread() {
             public void run() {
                 try {
                     Message message = new Message();
                     message.what = 0x002;
-
-                   String personData = GetData.getHtmlwithtoken(HTML_URL1); //用token權限，抓下資料
-//                    ArrayList<Repo> persons = gsonParser.parse(personData.toString()); //方法2 傳過去用Gson做解析
-                //    Log.i("123", "personData" + personData);
-                    Repo repo = new Repo();
-//                    repo.setID(personData.substring(14,16));
-//                    repo.setName(personData.substring(31,41));
-//                    repo.setAttack(personData.substring(57,59));
-//                    repo.setDefense(personData.substring(75,78));
-
-                    Log.i("123", " personData.length() : " + personData.length());
-//                    Log.i("123", "id : " + personData.substring(14,16));//01
-//                    Log.i("123", "Name : " + personData.substring(31,41));//01
-//                    Log.i("123", "Attack : " + personData.substring(57,59));//01
-//                    Log.i("123", "Defense : " + personData.substring(75,78));//01
-
-                    Log.i("123", "id : " + personData.substring(14,16));//02
-                    Log.i("123", "Name : " + personData.substring(31,35));//02
-                    Log.i("123", "Attack : " + personData.substring(51,53));//02
-                    Log.i("123", "Defense : " + personData.substring(69,72));//02
-
-//                    message.obj = repo;
-//                    message2.obj = GetData.getHtml(HTML_URL1); //second things
+                    String personData = GetData.getHtmlwithtoken(HTML_URL1); //用token權限，抓下資料
+                     ArrayList<Repo> persons = gsonParser.parse(personData.toString()); //方法2 傳過去用Gson做解析
+                        Log.i("123", "personData" + personData);
+                    message.obj = persons;
                     handler.sendMessage(message);
-//                    handler.sendMessage(message2); //second things
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
-        }.start();
+        };
+//        MyThreadRunner my1 = new MyThreadRunner(HTML_URL1);
+//        Thread t1 = new Thread(my1,"thread 1");
+//
+//        MyThreadRunner my2 = new MyThreadRunner(HTML_URL2);
+//        Thread t2 = new Thread(my2,"thread 2");
+//
+        Thread t2 = new Thread() {
+            public void run() {
+                try {
+                    Message message = new Message();
+                    message.what = 0x002;
+                    String personData = GetData.getHtmlwithtoken(HTML_URL2); //用token權限，抓下資料
+                    ArrayList<Repo> persons = gsonParser.parse(personData.toString()); //方法2 傳過去用Gson做解析
+                    Log.i("123", "personData" + personData);
+                    message.obj = persons;
+                    handler.sendMessage(message);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        };
+        t1.start();
+        t2.start();
 
     }
+
+//    class MyThreadRunner implements Runnable {
+//        private String HTML_URL = "";
+//
+//        public MyThreadRunner(String HTML_URL) {
+//            this.HTML_URL = HTML_URL;
+//        }
+//
+//        @Override
+//        public void run() {
+//                synchronized (HTML_URL) {
+//                    try {
+//                        Message message = new Message();
+//                        message.what = 0x002;
+//                        String personData = GetData.getHtmlwithtoken(HTML_URL); //用token權限，抓下資料
+//                        ArrayList<Repo> persons = gsonParser.parse(personData.toString()); //方法2 傳過去用Gson做解析
+//                        Log.i("123", "personData" + personData);
+//                        message.obj = persons;
+//                        handler.sendMessage(message);
+//                    } catch (Exception e) {
+//                        e.printStackTrace();
+//                    }
+//                }
+//        }
+//    }
 
     private Handler handler = new Handler() {
         public void handleMessage(android.os.Message msg) {
             switch (msg.what) {
                 case 0x002:
-//                    ArrayList<Repo> list = (ArrayList<Repo>) msg.obj;
-
-//                    myAdapter.setDatelist(list);
+                    ArrayList<Repo> list = (ArrayList<Repo>) msg.obj;
+                    myAdapter.setDatelist(list);
                     recyclerView.setAdapter(myAdapter); //必須放在 myAdapter.setNames 之後做
                     Toast.makeText(MainActivity.this, "讀取完畢", Toast.LENGTH_SHORT).show();
 //                    Log.i("suvini", "persons.get(0).getId() : " + persons.get(0).getName());

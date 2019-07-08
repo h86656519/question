@@ -3,10 +3,10 @@ package com.example.question4;
 public class Repo {
     public String ID = "";
     public String Name = "";
-    public String Attack = "";
-    public String Defense = ""; //用gson 變數不能亂取，要跟資料一樣
+    public int Attack = 0;
+    public int Defense = 0; //用gson 變數不能亂取，要跟資料一樣
 
-    public void setDefense(String defense) {
+    public void setDefense(int defense) {
         this.Defense = defense;
     }
 
@@ -18,7 +18,7 @@ public class Repo {
         this.ID = ID;
     }
 
-    public void setAttack(String attack) {
+    public void setAttack(int attack) {
         Attack = attack;
     }
 
@@ -30,11 +30,11 @@ public class Repo {
         return ID;
     }
 
-    public String getDefense() {
+    public int getDefense() {
         return Defense;
     }
 
-    public String getAttack() {
+    public int getAttack() {
         return Attack;
     }
 
