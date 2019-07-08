@@ -17,27 +17,39 @@ public class GetData implements Runnable {
         this.HTML_URL = HTML_URL;
     }
 
-    public static synchronized String getHtmlwithtoken(String path) throws Exception {
-        URL url = new URL(path);
-        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-        conn.setConnectTimeout(5000);
-        conn.setRequestMethod("GET"); //GET请求不支持请求体，只有POST请求才能设置请求体
-
-        Log.i("suviniii", "getResponseCode : " + conn.getResponseCode());
-        if (conn.getResponseCode() == 200) {
-            InputStream in = conn.getInputStream();
-            byte[] data = StreamTool.read(in);
-            String html = new String(data, "UTF-8");
-            Log.i("suviniii", "html : " +html);
-            return html;
-        }
-        return null;
-    }
+//    public static String getHtmlwithtoken(String path) throws Exception {
+//        URL url = new URL(path);
+//        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+//        conn.setConnectTimeout(5000);
+//        conn.setRequestMethod("GET"); //GET请求不支持请求体，只有POST请求才能设置请求体
+//
+//        Log.i("suviniii", "getResponseCode : " + conn.getResponseCode());
+//        if (conn.getResponseCode() == 200) {
+//            InputStream in = conn.getInputStream();
+//            byte[] data = StreamTool.read(in);
+//            String html = new String(data, "UTF-8");
+//            Log.i("suviniii", "html : " +html);
+//            return html;
+//        }
+//        return null;
+//    }
 
     @Override
     public void run() {
         try {
-            getHtmlwithtoken(HTML_URL);
+            URL url = new URL(HTML_URL);
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setConnectTimeout(5000);
+            conn.setRequestMethod("GET"); //GET请求不支持请求体，只有POST请求才能设置请求体
+
+            Log.i("suviniii", "getResponseCode : " + conn.getResponseCode());
+            if (conn.getResponseCode() == 200) {
+                InputStream in = conn.getInputStream();
+                byte[] data = StreamTool.read(in);
+                String html = new String(data, "UTF-8");
+                Log.i("suviniii", "html : " +html);
+               // return html;
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
