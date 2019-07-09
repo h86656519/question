@@ -72,7 +72,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> implem
 
     @Override
     public int getItemCount() {
-//        Log.i("123", "persons.size() " +persons.size());//01
+        Log.i("123", "persons.size() " +persons.size());//01
         return persons.size();
 
 //        return 0;
