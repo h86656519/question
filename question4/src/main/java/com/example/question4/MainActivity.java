@@ -7,28 +7,25 @@ import android.os.Message;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.Button;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import org.json.JSONObject;
-
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+//遇到的問題
+//No adapter attached; skipping layout
 
-//待完成
-//1.資料整理
-//2.同步request
-//3.顯示資料
 public class MainActivity extends AppCompatActivity {
     String[] hostList = {"http://demo.kidtech.com.tw/files/appexam/appexam1.htm", "http://demo.kidtech.com.tw/files/appexam/appexam2.htm"};
     private MyAdapter myAdapter;
     private RecyclerView recyclerView;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
