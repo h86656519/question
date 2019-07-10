@@ -25,41 +25,12 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
-
     private GoogleMap mMap;
-    SupportMapFragment mapFrag;
     private LocationManager mLocationManager;
     public static final int LOCATION_UPDATE_MIN_DISTANCE = 10;
     public static final int LOCATION_UPDATE_MIN_TIME = 5000;
     private static final int REQUSETCODE = 100;
     Location location = null;
-    private LocationListener mLocationListener = new LocationListener() {
-        @Override
-        public void onLocationChanged(Location location) {
-            if (location != null) {
-//                Logger.d(String.format("%f, %f", location.getLatitude(), location.getLongitude()));
-                drawMarker(location);
-                mLocationManager.removeUpdates(mLocationListener);
-            } else {
-//                Logger.d("Location is null");
-            }
-        }
-
-        @Override
-        public void onStatusChanged(String s, int i, Bundle bundle) {
-
-        }
-
-        @Override
-        public void onProviderEnabled(String s) {
-
-        }
-
-        @Override
-        public void onProviderDisabled(String s) {
-
-        }
-    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,26 +46,20 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-        Toast.makeText(MapsActivity.this, "onMapReady", Toast.LENGTH_SHORT).show();
         if (checkPermission()) {
             if (location != null) {
-//                LatLng sydney = new LatLng(location.getLatitude(), location.getLongitude());
-//                mMap.addMarker(new MarkerOptions().position(sydney).title("座標位置 : " + location.getLatitude() + "," + location.getLongitude())).showInfoWindow();
-//                mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
-//                mMap.setMyLocationEnabled(true);
                 drawMarker(location);
             }
         } else {
             askPermission();
         }
-        mMap.animateCamera(CameraUpdateFactory.zoomTo(18));
-
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         getCurrentLocation();
+        Toast.makeText(MapsActivity.this, "還沒抓到位置，要在等一下", Toast.LENGTH_LONG).show();
     }
 
     private void getCurrentLocation() {
@@ -102,7 +67,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         boolean isNetworkEnabled = mLocationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER); //網路有沒有開
         location = null;
         if (!(isGPSEnabled || isNetworkEnabled))
-            Toast.makeText(MapsActivity.this, "沒網路??", Toast.LENGTH_SHORT).show();
+            Toast.makeText(MapsActivity.this, "沒網路?? 沒gps??", Toast.LENGTH_SHORT).show();
         else {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N &&
                     ContextCompat.checkSelfPermission(MapsActivity.this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
@@ -121,7 +86,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         LOCATION_UPDATE_MIN_TIME, LOCATION_UPDATE_MIN_DISTANCE, mLocationListener);
                 location = mLocationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
             }
-        }沒gps??
+        }
         if (location != null) {
             drawMarker(location);
         }
@@ -151,12 +116,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         if (location != null) {
                             drawMarker(location);
                         }
-
                     }
                 } else {
                     //判斷 "不在詢問"
                     if (ActivityCompat.shouldShowRequestPermissionRationale(MapsActivity.this,
-                            Manifest.permission.CAMERA)) {
+                            Manifest.permission.ACCESS_COARSE_LOCATION)) {
                         //沒按下前
                         Toast.makeText(MapsActivity.this, "請到設定開啟權限", Toast.LENGTH_SHORT).show();
                     } else {
@@ -176,9 +140,30 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 mMap.addMarker(new MarkerOptions().position(sydney).title("座標位置 : " + location.getLatitude() + "," + location.getLongitude())).showInfoWindow();
                 mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
                 mMap.setMyLocationEnabled(true);
+                mMap.animateCamera(CameraUpdateFactory.zoomTo(18));
+            }
+        }
+    }
+
+    private LocationListener mLocationListener = new LocationListener() {
+        @Override
+        public void onLocationChanged(Location location) {
+            if (location != null) {
+                drawMarker(location);
+                mLocationManager.removeUpdates(mLocationListener); //移除監聽
+                Toast.makeText(MapsActivity.this, "onLocationChanged", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(MapsActivity.this, "還沒抓到位置，要在等一下", Toast.LENGTH_SHORT).show();
             }
         }
 
+        @Override
+        public void onStatusChanged(String s, int i, Bundle bundle) { }
 
-    }
+        @Override
+        public void onProviderEnabled(String s) { }
+
+        @Override
+        public void onProviderDisabled(String s) { }
+    };
 }
