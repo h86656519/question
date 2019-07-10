@@ -30,7 +30,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public static final int LOCATION_UPDATE_MIN_DISTANCE = 10;
     public static final int LOCATION_UPDATE_MIN_TIME = 5000;
     private static final int REQUSETCODE = 100;
-    Location location = null;
+    private Location location = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -151,9 +151,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             if (location != null) {
                 drawMarker(location);
                 mLocationManager.removeUpdates(mLocationListener); //移除監聽
-                Toast.makeText(MapsActivity.this, "onLocationChanged", Toast.LENGTH_SHORT).show();
             } else {
-                Toast.makeText(MapsActivity.this, "還沒抓到位置，要在等一下", Toast.LENGTH_SHORT).show();
+                Toast.makeText(MapsActivity.this, "還沒抓到位置，還要在等一下", Toast.LENGTH_SHORT).show();
             }
         }
 
