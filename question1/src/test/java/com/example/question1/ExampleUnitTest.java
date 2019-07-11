@@ -1,4 +1,4 @@
-package com.example.question5;
+package com.example.question1;
 
 import org.junit.Test;
 
