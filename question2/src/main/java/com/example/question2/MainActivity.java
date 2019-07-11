@@ -86,7 +86,7 @@ public class MainActivity extends AppCompatActivity {
         imageView1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Outerframe = BitmapFactory.decodeResource(MainActivity.this.getResources(), R.mipmap.frame);
+                Outerframe = BitmapFactory.decodeResource(MainActivity.this.getResources(), R.mipmap.frame_circle);
                 Toast.makeText(MainActivity.this, "選擇 : 點外框", Toast.LENGTH_SHORT).show();
             }
         });
