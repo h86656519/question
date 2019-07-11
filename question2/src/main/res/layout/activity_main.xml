@@ -36,7 +36,7 @@
             android:layout_height="50dp"
             android:layout_marginLeft="20dp"
             android:scaleType="fitXY"
-            android:src="@mipmap/frame" />
+            android:src="@mipmap/frame_circle" />
 
         <ImageView
             android:id="@+id/image2"
