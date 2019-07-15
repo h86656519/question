@@ -57,6 +57,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 imageUri = Uri.fromFile(fileUri); //原圖
+                //TODO what if SDK_INT < N??
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                     //通过FileProvider创建一个content类型的Uri
                     imageUri = FileProvider.getUriForFile(MainActivity.this, MainActivity.this.getPackageName() + ".fileprovider", fileUri);
@@ -232,9 +233,9 @@ public class MainActivity extends AppCompatActivity {
         }
         Bitmap bitmap = backBitmap.copy(Bitmap.Config.ARGB_8888, true); //Bitmap.Config.ARGB_8888 圖片質量高
         Canvas canvas = new Canvas(bitmap);
-        Rect baseRect = new Rect(0, 0, backBitmap.getWidth(), backBitmap.getHeight());
+        Rect backRect = new Rect(0, 0, backBitmap.getWidth(), backBitmap.getHeight());
         Rect frontRect = new Rect(0, 0, frontBitmap.getWidth(), frontBitmap.getHeight());
-        canvas.drawBitmap(frontBitmap, frontRect, baseRect, null);
+        canvas.drawBitmap(frontBitmap, frontRect, backRect, null);
         return bitmap;
     }
 

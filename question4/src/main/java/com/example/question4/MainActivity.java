@@ -33,7 +33,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         checkInternet(); //確認網路
 
-        ExecutorService executor = Executors.newSingleThreadExecutor(); //用ExecutorService 確保同步執行
+        ExecutorService executor = Executors.newFixedThreadPool(2); //用ExecutorService 確保同步執行
         myAdapter = new MyAdapter(MainActivity.this);
         recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(MainActivity.this, RecyclerView.VERTICAL, false);
